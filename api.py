@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import flask,json
 from flask import request
+from flask import render_template,url_for,redirect
  
 '''
 flask： web框架，通过flask提供的装饰器@server.route()将普通函数转换为服务
@@ -28,9 +29,15 @@ def login():
         resu = {'code': 10001, 'message': '参数不能为空！'}
         return json.dumps(resu, ensure_ascii=False)
 
-@server.route('/test', methods=['get', 'post'])
-def test():
-    return '你好'
- 
+# 将请求转发到该脚本的同级目录dist下的index.html
+@server.route('/dist', methods=['get', 'post'])
+def dist(name=None):
+    return render_template('index.html', name=name)
+
+# 将请求转发到dist接口
+@server.route('/', methods=['get', 'post'])
+def index():
+    return redirect(url_for('dist'))
+
 if __name__ == '__main__':
     server.run(debug=True, port=80, host='0.0.0.0')# 指定端口、host,0.0.0.0代表不管几个网卡，任何ip都可以访问
